@@ -1,0 +1,410 @@
+{
+  "_id": "bluemixworkshop-gui/flow",
+  "_rev": "86-bea160a332d897f77116501e26ec79e1",
+  "flow": [
+    {
+      "id": "f6a80dec.87ac68",
+      "type": "tab",
+      "label": "feedback"
+    },
+    {
+      "id": "566019ea.588d7",
+      "type": "tab",
+      "label": "Flow 1"
+    },
+    {
+      "id": "b7ba9b5.19720e8",
+      "type": "ui_link",
+      "z": "",
+      "name": "Poll",
+      "link": "https://bluemixworkshop-poll.eu-gb.mybluemix.net/#/polls",
+      "icon": "open_in_browser",
+      "target": "iframe",
+      "order": 1
+    },
+    {
+      "id": "2a3a1107.a8ed76",
+      "type": "ui_base",
+      "name": "Bluemix Workshop",
+      "theme": "theme-dark"
+    },
+    {
+      "id": "5a1ea4ad.c87c0c",
+      "type": "ui_tab",
+      "z": "",
+      "name": "Feedback",
+      "icon": "dashboard",
+      "order": 1
+    },
+    {
+      "id": "b1128276.5329e8",
+      "type": "ui_tab",
+      "z": "",
+      "name": "Dashboard",
+      "icon": "dashboard",
+      "order": 2
+    },
+    {
+      "id": "bd1b6739.017608",
+      "type": "ui_group",
+      "z": "",
+      "name": "Feedback",
+      "tab": "5a1ea4ad.c87c0c",
+      "order": 1,
+      "disp": true,
+      "width": "15"
+    },
+    {
+      "id": "99904c97.d70b88",
+      "type": "ui_tab",
+      "z": "",
+      "name": "Admin",
+      "icon": "dashboard",
+      "order": 3
+    },
+    {
+      "id": "c9b6de7a.ea58d8",
+      "type": "ui_group",
+      "z": "",
+      "name": "Admin",
+      "tab": "99904c97.d70b88",
+      "disp": true,
+      "width": "6"
+    },
+    {
+      "id": "373ab70c.f990c",
+      "type": "cloudant",
+      "name": ""
+    },
+    {
+      "id": "e0418f94.3cd508",
+      "type": "cloudant",
+      "name": ""
+    },
+    {
+      "id": "ec09a496.469e48",
+      "type": "ui_form",
+      "z": "f6a80dec.87ac68",
+      "name": "Feedback",
+      "label": "Feedback",
+      "group": "bd1b6739.017608",
+      "order": 0,
+      "width": "0",
+      "height": "0",
+      "options": [
+        {
+          "label": "ID",
+          "value": "ID",
+          "type": "text",
+          "required": true
+        },
+        {
+          "label": "Feedback",
+          "value": "Feedback",
+          "type": "text",
+          "required": true
+        }
+      ],
+      "formValue": {
+        "ID": "",
+        "Feedback": ""
+      },
+      "payload": "",
+      "topic": "",
+      "x": 143.5,
+      "y": 170.75,
+      "wires": [
+        [
+          "df301e66.315d18",
+          "62783ae0.7b57bc"
+        ]
+      ]
+    },
+    {
+      "id": "f2ebd71e.6fbf",
+      "type": "ui_gauge",
+      "z": "f6a80dec.87ac68",
+      "name": "Anger",
+      "group": "bd1b6739.017608",
+      "order": 0,
+      "width": "3",
+      "height": "3",
+      "gtype": "donut",
+      "title": "Anger",
+      "label": "",
+      "format": "{{value|number:2}}",
+      "min": "0",
+      "max": "1",
+      "colors": [
+        "#cc3632",
+        "#e6e600",
+        "#00ae00"
+      ],
+      "x": 775.5,
+      "y": 274.75,
+      "wires": []
+    },
+    {
+      "id": "485ab466.80934c",
+      "type": "watson-tone-analyzer-v3",
+      "z": "f6a80dec.87ac68",
+      "name": "Kimmo",
+      "tones": "emotion",
+      "sentences": "true",
+      "contentType": "false",
+      "x": 437.5,
+      "y": 193,
+      "wires": [
+        [
+          "587bbed7.06bb4",
+          "558aa6c4.c4a4d",
+          "dc31f389.ecf238"
+        ]
+      ]
+    },
+    {
+      "id": "df301e66.315d18",
+      "type": "debug",
+      "z": "f6a80dec.87ac68",
+      "name": "",
+      "active": true,
+      "console": "false",
+      "complete": "false",
+      "x": 363.5,
+      "y": 65.5,
+      "wires": []
+    },
+    {
+      "id": "62783ae0.7b57bc",
+      "type": "function",
+      "z": "f6a80dec.87ac68",
+      "name": "",
+      "func": "msg = {payload:msg.payload.Feedback,id:msg.payload.ID};\nreturn msg;",
+      "outputs": 1,
+      "noerr": 0,
+      "x": 285.5,
+      "y": 190.75,
+      "wires": [
+        [
+          "485ab466.80934c"
+        ]
+      ]
+    },
+    {
+      "id": "587bbed7.06bb4",
+      "type": "debug",
+      "z": "f6a80dec.87ac68",
+      "name": "",
+      "active": true,
+      "console": "false",
+      "complete": "true",
+      "x": 641.5,
+      "y": 72.5,
+      "wires": []
+    },
+    {
+      "id": "558aa6c4.c4a4d",
+      "type": "function",
+      "z": "f6a80dec.87ac68",
+      "name": "Extract",
+      "func": "\nvar anger=0,fear=0,joy=0,sadness=0,disgust=0;\n\n//Get data from context\nvar flowContext = context.flow;\nvar count = flowContext.get('count')||0;\nvar a = flowContext.get('anger')||0;\nvar j = flowContext.get('joy')||0;\nvar f = flowContext.get('fear')||0;\nvar s = flowContext.get('sadness')||0;\nvar d = flowContext.get('disgust')||0;\n\n//count=count+1;\n//if(count<0)\n//    count=0;\n//This can be reseted by using -1 as the count => all the values get to zero\n\ntry\n{\n    //Handle the current feedback\n    var len = msg.response.document_tone.tone_categories[0].tones.length;\n    \n    for(i=0;i<len;i++)\n    {\n        var tone = msg.response.document_tone.tone_categories[0].tones[i];\n        if(tone.tone_id===\"anger\")\n            anger=(a*count+tone.score)/(count+1);\n        else if(tone.tone_id==\"joy\")\n            joy=(j*count+tone.score)/(count+1);\n        else if(tone.tone_id==\"fear\")\n            fear=(f*count+tone.score)/(count+1);\n        else if(tone.tone_id==\"sadness\")\n            sadness=(s*count+tone.score)/(count+1);\n        else if(tone.tone_id==\"disgust\")\n            disgust=(d*count+tone.score)/(count+1);\n    }\n}\ncatch(err)\n{\n    //Something went wrong\n}\n\ncount=count+1;\n//Store back to context\nflowContext.set('count',count);\nflowContext.set('anger',anger);\nflowContext.set('joy',joy);\nflowContext.set('fear',fear);\nflowContext.set('disgust',disgust);\nflowContext.set('sadness',sadness);\n\n//Package to payload and send out\nreturn [{\"payload\":joy},\n        {\"payload\":anger},\n        {\"payload\":fear},\n        {\"payload\":disgust},\n        {\"payload\":sadness},\n        {\"payload\":count}];",
+      "outputs": "6",
+      "noerr": 0,
+      "x": 587.5,
+      "y": 257.75,
+      "wires": [
+        [
+          "20df29b6.2c1ba6"
+        ],
+        [
+          "f2ebd71e.6fbf"
+        ],
+        [
+          "9b8a8922.773ad"
+        ],
+        [
+          "be06cbbd.992c2"
+        ],
+        [
+          "2137a047.ad7cf"
+        ],
+        [
+          "db50504b.dea188"
+        ]
+      ]
+    },
+    {
+      "id": "20df29b6.2c1ba6",
+      "type": "ui_gauge",
+      "z": "f6a80dec.87ac68",
+      "name": "Joy",
+      "group": "bd1b6739.017608",
+      "order": 0,
+      "width": "3",
+      "height": "3",
+      "gtype": "donut",
+      "title": "Joy",
+      "label": "",
+      "format": "{{value|number:2}}",
+      "min": 0,
+      "max": "1",
+      "colors": [
+        "#d2501f",
+        "#e6e600",
+        "#00b600"
+      ],
+      "x": 779.5,
+      "y": 233.75,
+      "wires": []
+    },
+    {
+      "id": "9b8a8922.773ad",
+      "type": "ui_gauge",
+      "z": "f6a80dec.87ac68",
+      "name": "Fear",
+      "group": "bd1b6739.017608",
+      "order": 0,
+      "width": "3",
+      "height": "3",
+      "gtype": "donut",
+      "title": "Fear",
+      "label": "",
+      "format": "{{value|number:2}}",
+      "min": 0,
+      "max": "1",
+      "colors": [
+        "#d24e1a",
+        "#e6e600",
+        "#00b600"
+      ],
+      "x": 775.5,
+      "y": 318.75,
+      "wires": []
+    },
+    {
+      "id": "dc31f389.ecf238",
+      "type": "cloudant out",
+      "z": "f6a80dec.87ac68",
+      "name": "feedback",
+      "cloudant": "",
+      "database": "feedback",
+      "service": "bluemixworkshop-gui-cloudantNoSQLDB",
+      "payonly": false,
+      "operation": "insert",
+      "x": 762.5,
+      "y": 176.25,
+      "wires": []
+    },
+    {
+      "id": "db50504b.dea188",
+      "type": "ui_gauge",
+      "z": "f6a80dec.87ac68",
+      "name": "count",
+      "group": "bd1b6739.017608",
+      "order": 0,
+      "width": 0,
+      "height": 0,
+      "gtype": "compass",
+      "title": "Count",
+      "label": "count",
+      "format": "{{value}}",
+      "min": 0,
+      "max": "100",
+      "colors": [
+        "#00b500",
+        "#e6e600",
+        "#ca3838"
+      ],
+      "x": 724.5,
+      "y": 466.75,
+      "wires": []
+    },
+    {
+      "id": "ed969185.ebf358",
+      "type": "ui_button",
+      "z": "f6a80dec.87ac68",
+      "name": "reset",
+      "group": "c9b6de7a.ea58d8",
+      "order": 0,
+      "width": 0,
+      "height": 0,
+      "label": "reset",
+      "color": "",
+      "icon": "",
+      "payload": "",
+      "payloadType": "str",
+      "topic": "",
+      "x": 266.5,
+      "y": 421.75,
+      "wires": [
+        [
+          "4dae449f.c7badc"
+        ]
+      ]
+    },
+    {
+      "id": "4dae449f.c7badc",
+      "type": "function",
+      "z": "f6a80dec.87ac68",
+      "name": "Zero",
+      "func": "context.flow.set('count',-1);\n\nreturn msg;",
+      "outputs": 1,
+      "noerr": 0,
+      "x": 445.5,
+      "y": 418.75,
+      "wires": [
+        [
+          "558aa6c4.c4a4d"
+        ]
+      ]
+    },
+    {
+      "id": "be06cbbd.992c2",
+      "type": "ui_gauge",
+      "z": "f6a80dec.87ac68",
+      "name": "Disgust",
+      "group": "bd1b6739.017608",
+      "order": 0,
+      "width": "3",
+      "height": "3",
+      "gtype": "donut",
+      "title": "Disgust",
+      "label": "",
+      "format": "{{value|number:2}}",
+      "min": 0,
+      "max": "1",
+      "colors": [
+        "#d24e1a",
+        "#e6e600",
+        "#00b600"
+      ],
+      "x": 786,
+      "y": 363,
+      "wires": []
+    },
+    {
+      "id": "2137a047.ad7cf",
+      "type": "ui_gauge",
+      "z": "f6a80dec.87ac68",
+      "name": "Sadness",
+      "group": "bd1b6739.017608",
+      "order": 0,
+      "width": "3",
+      "height": "3",
+      "gtype": "donut",
+      "title": "Sadness",
+      "label": "",
+      "format": "{{value|number:2}}",
+      "min": 0,
+      "max": "1",
+      "colors": [
+        "#d24e1a",
+        "#e6e600",
+        "#00b600"
+      ],
+      "x": 770,
+      "y": 410,
+      "wires": []
+    }
+  ]
+}
